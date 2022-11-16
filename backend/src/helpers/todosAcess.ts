@@ -23,7 +23,7 @@ export class TodosAccess {
             signatureVersion: 'v4'
         }),
             
-        private readonly bucketName = process.env.IMAGES_S3_BUCKET,
+        private readonly bucketName = process.env.ATTACHMENT_S3_BUCKET,
     ) {}
 
     async getAllTodos(userId: string): Promise<TodoItem[]> {
@@ -39,6 +39,10 @@ export class TodosAccess {
         }).promise()
 
         const items = result.Items
+        for (let i = 0; i < items.length; i++) {
+            const todo = items[i]
+            todo.attachmentUrl = `https://${this.bucketName}.s3.amazonaws.com/${todo.todoId}`
+        }
         return items as TodoItem[]
     }
 
